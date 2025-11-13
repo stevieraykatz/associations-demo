@@ -1,12 +1,15 @@
-import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
-import { base } from 'wagmi/chains'
-import { baseAccount, injected, walletConnect } from 'wagmi/connectors'
+import { cookieStorage, createConfig, createStorage, http } from "wagmi";
+import { base } from "wagmi/chains";
+import { baseAccount } from "wagmi/connectors";
 
 export function getConfig() {
   return createConfig({
     chains: [base],
     connectors: [
       baseAccount({
+        preference: {
+          walletUrl: "http://localhost:3005/connect",
+        },
         subAccounts: {
           creation: "on-connect",
           defaultAccount: "sub",
@@ -21,11 +24,11 @@ export function getConfig() {
     transports: {
       [base.id]: http(),
     },
-  })
+  });
 }
 
-declare module 'wagmi' {
+declare module "wagmi" {
   interface Register {
-    config: ReturnType<typeof getConfig>
+    config: ReturnType<typeof getConfig>;
   }
 }
