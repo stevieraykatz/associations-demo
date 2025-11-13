@@ -238,23 +238,38 @@ function App() {
       <div
         style={{
           flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           backgroundColor: "#f5f5f5",
           padding: "20px",
-          overflow: "hidden",
-          position: "relative",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
         }}
       >
-        <Image
-          src="/images/blockdiagram.png"
-          alt="Demo screenshot"
-          fill
-          style={{
-            objectFit: "contain",
-          }}
-        />
+        <div
+          style={{ position: "relative", width: "100%", minHeight: "600px" }}
+        >
+          <Image
+            src="/images/blockdiagram.png"
+            alt="Block diagram"
+            fill
+            style={{
+              objectFit: "contain",
+            }}
+          />
+        </div>
+        <div
+          style={{ position: "relative", width: "100%", minHeight: "600px" }}
+        >
+          <Image
+            src="/images/ens-architecture.png"
+            alt="ENS architecture"
+            fill
+            style={{
+              objectFit: "contain",
+            }}
+          />
+        </div>
       </div>
     </div>
   );
