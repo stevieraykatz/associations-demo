@@ -1,8 +1,8 @@
 'use client'
 
-import Image from 'next/image'
 import { useAccount, useConnect, useDisconnect, useWalletClient } from 'wagmi'
 import { useResolveAssociations } from '@/hooks/useResolveAssociations'
+import { useVerifyAssociationSignature } from '@/hooks/useVerifyAssociationSignature'
 
 interface WalletConnectResponse {
   accounts: Array<{
@@ -22,6 +22,7 @@ function App() {
   const { data: walletClient } = useWalletClient()
   const { disconnect } = useDisconnect()
   const { resolveAssociations, isLoading: isResolving, data: associationsData } = useResolveAssociations()
+  const { verifySignature, isVerifying, result: verificationResult } = useVerifyAssociationSignature()
 
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
@@ -106,6 +107,45 @@ function App() {
                   {associationsData.hasMatchingAssociation ? '✓ TRUE' : '✗ FALSE'}
                 </span>
               </div>
+              
+              {associationsData.associationsData && associationsData.associationsData.associations.length > 0 && (
+                <div style={{ marginTop: '20px' }}>
+                  <h4>Verify Signature</h4>
+                  {associationsData.associationsData.associations.map((assoc, idx) => (
+                    <div key={assoc.id} style={{ marginBottom: '10px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (associationsData.forwardResolvedAddress) {
+                            verifySignature({
+                              association: assoc,
+                              expectedSigner: associationsData.forwardResolvedAddress,
+                            })
+                          }
+                        }}
+                        disabled={isVerifying}
+                      >
+                        Verify Association #{assoc.id}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {isVerifying && <div>Verifying signature...</div>}
+              {verificationResult && (
+                <div style={{ marginTop: '10px', padding: '10px', backgroundColor: verificationResult.isValid ? '#d4edda' : '#f8d7da', borderRadius: '5px' }}>
+                  <strong>Signature Verification:</strong>{' '}
+                  <span style={{ color: verificationResult.isValid ? 'green' : 'red' }}>
+                    {verificationResult.isValid ? '✓ VALID' : '✗ INVALID'}
+                  </span>
+                  <div style={{ fontSize: '0.9em', marginTop: '5px' }}>
+                    <div>Recovered: {verificationResult.recoveredSigner}</div>
+                    <div>Expected: {verificationResult.expectedSigner}</div>
+                  </div>
+                </div>
+              )}
+
               <details>
                 <summary>Full Data</summary>
                 <pre>{JSON.stringify(associationsData, null, 2)}</pre>
@@ -127,12 +167,19 @@ function App() {
         alignItems: 'center', 
         justifyContent: 'center',
         backgroundColor: '#f5f5f5',
-        padding: '20px'
+        padding: '20px',
+        overflow: 'hidden'
       }}>
         <img
           src="/images/blockdiagram.png"
           alt="Demo screenshot"
-          style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+          style={{ 
+            maxWidth: '100%', 
+            maxHeight: '100%', 
+            width: 'auto', 
+            height: 'auto', 
+            objectFit: 'contain' 
+          }}
         />
       </div>
     </div>
