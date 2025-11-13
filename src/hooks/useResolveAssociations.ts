@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { usePublicClient } from 'wagmi'
-import { normalize } from 'viem/ens'
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
+import { normalize } from 'viem/ens'
 
 interface ResolveAssociationsParams {
   name: string
@@ -75,7 +74,6 @@ export function useResolveAssociations() {
       const associationsUrl = await publicClient.getEnsText({
         name: normalizedName,
         key: 'associations-url',
-        universalResolverAddress: '0x426fA03fB86E510d0Dd9F70335Cf102a98b10875'
       })
       console.log('Associations URL:', associationsUrl)
 
